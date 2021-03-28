@@ -89,7 +89,13 @@
 
     var funcRequestAnimationFrame = (window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || function(a){return setTimeout(function() { a(Date.now()) }, 16);}).bind(window);
 
+    var yeart = null;
+    var dayt = null;
+    var timert = null;
+    var timer_mst = null;
     var start_date = new Date(start_epoch * 1000);
+    var last_days = 0;
+    var last_secs = 0;
 
     function pad(i) {
       return ("00"+i).slice(-2);
@@ -100,29 +106,38 @@
     }
 
     function render() {
-      var yeart = document.getElementById("year");
-      var dayt = document.getElementById("day");
-      var timert = document.getElementById("timer");
-      var timer_mst = document.getElementById("timer_ms");
-
       var time = new Date() - start_date;
 
-      var year = Math.floor(time / 31536000000);
-      var day = Math.floor(time / 86400000) % 365
-      var hour = Math.floor(time / 3600000) % 24;
-      var min = Math.floor(time / 60000) % 60;
-      var sec = Math.floor(time / 1000) % 60;
+      var days = Math.floor(time / 86400000);
+      var secs = Math.floor(time / 1000);
       var ms = time % 1000;
 
-      yeart.innerHTML = year;
-      dayt.innerHTML = day;
-      timert.innerHTML = pad(hour) + ":" + pad(min) + ":" + pad(sec);
+      if (last_days !== days) {
+        last_days = days;
+        var year = Math.floor(time / 31536000000);
+        var day = Math.floor(time / 86400000) % 365;
+        yeart.innerHTML = year;
+        dayt.innerHTML = day;
+      }
+      if (last_secs !== secs) {
+        last_secs = secs;
+        var hour = Math.floor(time / 3600000) % 24;
+        var min = Math.floor(time / 60000) % 60;
+        var secs = Math.floor(time / 1000);
+        var sec = secs % 60;
+        timert.innerHTML = pad(hour) + ":" + pad(min) + ":" + pad(sec);
+      }
       timer_mst.innerHTML = pad_ms(ms);
 
       funcRequestAnimationFrame(render);
     }
 
     window.onload = function() {
+      yeart = document.getElementById("year");
+      dayt = document.getElementById("day");
+      timert = document.getElementById("timer");
+      timer_mst = document.getElementById("timer_ms");
+
       if (location.hash) {
         var font_size = parseInt(location.hash.slice(1), 10);
         if (!isNaN(font_size)) {
