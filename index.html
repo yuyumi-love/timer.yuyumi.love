@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title> 沒有優米的時間 </title>
+  <style>
+    body {
+      font-size: 192px;
+    }
+    h1 {
+      font-size: 0.15em;
+      margin: 0;
+    }
+    .clear {
+      clear: both;
+    }
+    .cont {
+      position: relative;
+      float: left;
+    }
+    .days {
+      font-size: 1em;
+    }
+    .year {
+      float: left;
+      padding-right: 0.1em;
+    }
+    .day_box {
+      position: relative;
+      height: 1em;
+      float: left;
+    }
+    .day {
+      font-size: 0.6em;
+      float: left;
+    }
+    .line_box {
+      position: relative;
+      float: left;
+      width: 0.5em;
+    }
+    .line {
+      position: absolute;
+      width: 1em;
+      height: 0.015em;
+      background-color: #000;
+      transform: rotate(-60deg);
+      top: 0.5em;
+      left: -0.4em;
+    }
+    .day_suffix_box {
+      float: left;
+    }
+    .day_suffix {
+      position: absolute;
+      font-size: 0.25em;
+      bottom: 0;
+    }
+    .day_unit_box {
+      height: 1em;
+      float: left;
+    }
+    .day_unit {
+      font-size: 0.5em;
+      font-weight: bold;
+      position: absolute;
+      top: 1.25em;
+    }
+    .timer_box {
+      font-size: 0.5em;
+    }
+    .timer {
+      float: left;
+    }
+    .timer_ms_box {
+      position: relative;
+      height: 1em;
+      float: left;
+    }
+    .timer_ms {
+      font-size: 0.5em;
+      position: absolute;
+      top: 0.9em;
+    }
+  </style>
+  <script>
+    var start_epoch = 1614444162;
+
+
+    var funcRequestAnimationFrame = (window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || function(a){return setTimeout(function() { a(Date.now()) }, 16);}).bind(window);
+
+    var start_date = new Date(start_epoch * 1000);
+
+    function pad(i) {
+      return ("00"+i).slice(-2);
+    }
+
+    function pad_ms(i) {
+      return ("000"+i).slice(-3);
+    }
+
+    function render() {
+      var yeart = document.getElementById("year");
+      var dayt = document.getElementById("day");
+      var timert = document.getElementById("timer");
+      var timer_mst = document.getElementById("timer_ms");
+
+      var time = new Date() - start_date;
+
+      var year = Math.floor(time / 31536000000);
+      var day = Math.floor(time / 86400000) % 365
+      var hour = Math.floor(time / 3600000) % 24;
+      var min = Math.floor(time / 60000) % 60;
+      var sec = Math.floor(time / 1000) % 60;
+      var ms = time % 1000;
+
+      yeart.innerHTML = year;
+      dayt.innerHTML = day;
+      timert.innerHTML = pad(hour) + ":" + pad(min) + ":" + pad(sec);
+      timer_mst.innerHTML = pad_ms(ms);
+
+      funcRequestAnimationFrame(render);
+    }
+
+    window.onload = function() {
+      if (location.hash) {
+        var font_size = parseInt(location.hash.slice(1), 10);
+        if (!isNaN(font_size)) {
+          document.getElementsByTagName("body")[0].style.fontSize = font_size + "px";
+        }
+      }
+
+      render();
+    };
+  </script>
+</head>
+<body>
+  <div class="cont">
+    <h1> 沒有優米的時間 </h1>
+    <div id="days" class="days">
+      <div id="year" class="year">0</div>
+      <div class="day_box">
+        <div id="day" class="day">111</div>
+        <div class="line_box">
+          <div class="line"></div>
+        </div>
+        <div class="day_suffix_box">
+          <div class="day_suffix">365</div>
+        </div>
+      </div>
+      <div class="day_unit_box">
+        <div class="day_unit">天</div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div class="timer_box">
+      <div id="timer" class="timer">00:00:00</div>
+      <div class="timer_ms_box">
+        <div id="timer_ms" class="timer_ms">000</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
