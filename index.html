@@ -34,10 +34,11 @@
     }
     .cont {
       position: relative;
-      float: left;
+      width: 3.5em; 
     }
-    .days {
+    .days_box {
       font-size: 1em;
+      margin: 0 auto;
     }
     .year {
       float: left;
@@ -86,6 +87,7 @@
     }
     .timer_box {
       font-size: 0.5em;
+      margin: 0 auto;
     }
     .timer {
       float: left;
@@ -100,6 +102,14 @@
       position: absolute;
       top: 0.9em;
     }
+
+    .text_calc {
+      position: absolute;
+      visibility: hidden;
+      height: auto;
+      width: auto;
+      white-space: nowrap; /* Thanks to Herb Caudill comment */
+    }
   </style>
   <script>
     var start_epoch = 1614444162;
@@ -107,6 +117,8 @@
 
     var funcRequestAnimationFrame = (window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || function(a){return setTimeout(function() { a(Date.now()) }, 16);}).bind(window);
 
+    var days_box = null;
+    var timer_box = null;
     var yeart = null;
     var dayt = null;
     var timert = null;
@@ -123,6 +135,23 @@
       return ("000"+i).slice(-3);
     }
 
+    function emSize() {
+      var test = document.getElementById("text_calc");
+      test.style.fontSize = "1em";
+      test.style.height = "1em";
+      var h = test.clientHeight;
+      test.style.height = "";
+      return h;
+    }
+
+    function calcWidth(text, size) {
+      size ||= "1em";
+      var test = document.getElementById("text_calc");
+      test.innerHTML = text;
+      test.style.fontSize = size;
+      return test.clientWidth;
+    }
+
     function render() {
       var time = new Date() - start_date;
 
@@ -136,6 +165,8 @@
         var day = Math.floor(time / 86400000) % 365;
         yeart.innerHTML = year;
         dayt.innerHTML = day;
+        var em = emSize();
+        days_box.style.width = (calcWidth(year, "1em") + em * 0.1 + calcWidth(day, "0.6em") + (0.5 + 0.5) * em) + "px";
       }
       if (last_secs !== secs) {
         last_secs = secs;
@@ -151,6 +182,8 @@
     }
 
     window.onload = function() {
+      days_box = document.getElementById("days_box");
+      timer_box = document.getElementById("timer_box");
       yeart = document.getElementById("year");
       dayt = document.getElementById("day");
       timert = document.getElementById("timer");
@@ -175,8 +208,9 @@
             }
           }
         });
-
       }
+
+      timer_box.style.width = (calcWidth("00:00:00", "0.5em") + calcWidth("000", "0.25em")) + "px";
 
       render();
     };
@@ -185,7 +219,7 @@
 <body class="darkable">
   <div class="cont">
     <h1> 沒有優米的時間 </h1>
-    <div id="days" class="days">
+    <div id="days_box" class="days_box">
       <div id="year" class="year">0</div>
       <div class="day_box">
         <div id="day" class="day">111</div>
@@ -201,12 +235,13 @@
       </div>
     </div>
     <div class="clear"></div>
-    <div class="timer_box">
+    <div id="timer_box" class="timer_box">
       <div id="timer" class="timer">00:00:00</div>
       <div class="timer_ms_box">
         <div id="timer_ms" class="timer_ms">000</div>
       </div>
     </div>
   </div>
+  <div id="text_calc" class="text_calc"></div>
 </body>
 </html>
