@@ -27,14 +27,19 @@
     }
     h1 {
       font-size: 0.15em;
+      text-align: center;
       margin: 0;
     }
     .clear {
       clear: both;
     }
     .cont {
-      position: relative;
       width: 3.5em; 
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
     .days_box {
       font-size: 1em;
@@ -145,7 +150,6 @@
     }
 
     function calcWidth(text, size) {
-      size ||= "1em";
       var test = document.getElementById("text_calc");
       test.innerHTML = text;
       test.style.fontSize = size;
@@ -190,6 +194,7 @@
       timer_mst = document.getElementById("timer_ms");
 
       var body = document.body;
+      var cont = document.getElementsByClassName("cont")[0];
 
       if (location.search) {
         location.search.slice(1).split("&").forEach(function(pair){
@@ -205,6 +210,7 @@
             }
             if (pair === "dark" || pair === "dark=true" || pair === "dark=1") {
               body.className = "dark";
+              cont.className = "cont dark"; // for obs overlay
             }
           }
         });
