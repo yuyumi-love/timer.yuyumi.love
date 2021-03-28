@@ -5,7 +5,7 @@
   <title> 沒有優米的時間 </title>
   <style>
     @media (prefers-color-scheme: dark) {
-      body {
+      .darkable {
         background: rgb(34, 36, 38);
         color: white;
       }
@@ -150,18 +150,33 @@
       timert = document.getElementById("timer");
       timer_mst = document.getElementById("timer_ms");
 
-      if (location.hash) {
-        var font_size = parseInt(location.hash.slice(1), 10);
-        if (!isNaN(font_size)) {
-          document.getElementsByTagName("body")[0].style.fontSize = font_size + "px";
-        }
+      var body = document.body;
+
+      if (location.search) {
+        location.search.slice(1).split("&").forEach(function(pair){
+          if (pair.startsWith("size=")) {
+            var font_size = parseInt(pair.slice(5), 10);
+            if (!isNaN(font_size)) {
+              body.style.fontSize = font_size + "px";
+            }
+          }
+          if (pair.startsWith("dark")) {
+            if (pair === "dark=false" || pair === "dark=0") { // explict disable dark
+              body.className = "";
+            }
+            if (pair === "dark" || pair === "dark=true" || pair === "dark=1") {
+              body.className = "dark";
+            }
+          }
+        });
+
       }
 
       render();
     };
   </script>
 </head>
-<body>
+<body class="darkable">
   <div class="cont">
     <h1> 沒有優米的時間 </h1>
     <div id="days" class="days">
